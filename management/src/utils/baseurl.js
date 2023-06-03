@@ -1,0 +1,1 @@
+export const IMG_BASEURL="http://localhost:666/"
