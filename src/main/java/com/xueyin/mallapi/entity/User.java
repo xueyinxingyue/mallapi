@@ -2,6 +2,8 @@ package com.xueyin.mallapi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDate;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
@@ -69,5 +71,11 @@ public class User implements Serializable {
      */
     private String userProfilePictureSrc;
 
+    //用户所在地地址对象
+    @TableField(exist = false)
+    private Address userAddressObj;
 
+    //用户家乡地址对象
+    @TableField(exist = false)
+    private Address userHomeAddressObj;
 }
