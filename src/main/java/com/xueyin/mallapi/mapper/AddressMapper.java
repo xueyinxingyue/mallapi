@@ -2,6 +2,7 @@ package com.xueyin.mallapi.mapper;
 
 import com.xueyin.mallapi.entity.Address;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author xueyin
  * @since 2023-06-05
  */
+@Repository
 public interface AddressMapper extends BaseMapper<Address> {
 
 }

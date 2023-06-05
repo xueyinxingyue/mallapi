@@ -1,11 +1,15 @@
 package com.xueyin.mallapi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -54,7 +58,7 @@ public class User implements Serializable {
     /**
      * 出生日期
      */
-    private LocalDate userBirthday;
+    private Date userBirthday;
 
     /**
      * 所在地地址
