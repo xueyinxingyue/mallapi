@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -51,7 +52,7 @@ public class Product implements Serializable {
     /**
      * 创建日期
      */
-    private LocalDateTime productCreateDate;
+    private Date productCreateDate;
 
     /**
      * 类别id
@@ -61,7 +62,7 @@ public class Product implements Serializable {
     /**
      * 是否上架  1上架 0 下架
      */
-    private Boolean productIsUp;
+    private Integer productIsUp;
 
     /**
      * 产品数量

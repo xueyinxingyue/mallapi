@@ -1,6 +1,7 @@
 package com.xueyin.mallapi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
@@ -38,5 +39,8 @@ public class Propertyvalue implements Serializable {
      */
     private Integer propertyvalueProductId;
 
+    //属性名称
+    @TableField(exist = false)
+    private String propertyName;
 
 }

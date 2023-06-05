@@ -74,11 +74,11 @@
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="修改" placement="top">
               <el-button type="primary" icon="el-icon-edit" size="mini"
-                @click="showEditDialog(scope.row.categoryId)"></el-button>
+                @click="showEditDialog(scope.row.productId)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-button type="warning" icon="el-icon-delete" size="mini"
-                @click="deleteDialog(scope.row.categoryId)"></el-button>
+                @click="deleteDialog(scope.row.productId)"></el-button>
             </el-tooltip>
           </template>
 
@@ -186,10 +186,10 @@
 
         <el-divider></el-divider>
         <div style="font-weight: bold; margin-bottom: 20px;">属性值信息</div>
-        <template v-if="propertyList.length > 0">
+        <template v-if="addForm.propvalues.length > 0">
           <el-row :gutter="20" v-for="(item, index) in addForm.propvalues">
             <el-col :span="10">
-              <el-form-item :label="propertyList[index].propertyName" prop="name" size="mini">
+              <el-form-item :label="item.propertyName" prop="name" size="mini">
                 <el-input v-model="item.propertyvalueValue"></el-input>
               </el-form-item>
             </el-col>
@@ -202,25 +202,114 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="修改分类" :visible.sync="editDialogVisible" @close="editDialogClosed">
-      <el-form :model="editForm" ref="editFormRefs" label-width="70px">
-        <el-form-item label="分类名称" label-width="120px" prop="name">
-          <el-input v-model="editForm.categoryName"></el-input>
-        </el-form-item>
-        <el-form-item label="分类" label-width="120px" prop="sn">
-          <el-tag :key="tag.propertyName" v-for="tag, index in editForm.props" closable :disable-transitions="false"
-            @close="handleCloseTagUpdate(index)">
-            {{ tag.propertyName }}
-          </el-tag>
-          <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInputUpdate" size="small"
-            @keyup.enter.native="handleInputConfirmUpdate" @blur="handleInputConfirmUpdate">
-          </el-input>
-          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 属性</el-button>
-        </el-form-item>
+    <el-dialog title="修改商品" :visible.sync="editDialogVisible" @close="editDialogClosed">
+      <el-form :model="editForm" ref="editFormRefs" label-width="80px">
+        <el-row :gutter="20">
+          <el-col :span="10">
+            <el-form-item label="商品类型:" prop="name" size="mini">
+              <el-select v-model="editForm.productCategoryId" size="mini" @change="updateProductChangeCategoryId">
+                <el-option v-for="item in categoryList" :key="item.categoryId" :label="item.categoryName"
+                  :value="item.categoryId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="商品状态:" prop="name" size="mini">
+              <el-radio v-model="editForm.productIsUp" label=1>上架</el-radio>
+              <el-radio v-model="editForm.productIsUp" label=0>下架</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-divider></el-divider>
+        <div style="font-weight: bold; margin-bottom: 20px;">基本信息</div>
+        <el-row :gutter="20">
+          <el-col :span="10">
+            <el-form-item label="商品名称:" prop="name" size="mini">
+              <el-input v-model="editForm.productName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="商品标题:" prop="name" size="mini">
+              <el-input v-model="editForm.productTitle"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="10">
+            <el-form-item label="商品原价:" prop="name" size="mini">
+              <el-input v-model="editForm.productPrice"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="促销价:" prop="name" size="mini">
+              <el-input v-model="editForm.productSalePrice"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="10">
+            <el-form-item label="商品数量:" prop="name" size="mini">
+              <el-input v-model="editForm.productCount"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
+        <div style="font-weight: bold; margin-bottom: 20px;">概述图片</div>
+        <el-row :gutter="20">
+          <el-form-item label="" label-width="20px" prop="name">
+            <el-upload action="*" list-type="picture-card" :auto-upload="false" :file-list="editForm.singlePic"
+              :on-change="handleChange3">
+              <i slot="default" class="el-icon-plus"></i>
+              <div slot="file" slot-scope="{file}">
+                <img class="el-upload-list__item-thumbnail" :src="'http://localhost:666/' + file.productimageSrc" alt="">
+                <span class="el-upload-list__item-actions">
+                  <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove3(file)">
+                    <i class="el-icon-delete"></i>
+                  </span>
+                </span>
+              </div>
+            </el-upload>
+          </el-form-item>
+        </el-row>
+
+        <el-divider></el-divider>
+        <div style="font-weight: bold; margin-bottom: 20px;">详细图片</div>
+
+        <el-row :gutter="20">
+          <el-form-item label="" label-width="20px" prop="name">
+            <el-upload action="*" list-type="picture-card" :auto-upload="false" :file-list="editForm.detailPic"
+              :on-change="handleChange4">
+              <i slot="default" class="el-icon-plus"></i>
+              <div slot="file" slot-scope="{file}">
+                <img class="el-upload-list__item-thumbnail" :src="'http://localhost:666/' + file.productimageSrc" alt="">
+                <span class="el-upload-list__item-actions">
+                  <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove4(file)">
+                    <i class="el-icon-delete"></i>
+                  </span>
+                </span>
+              </div>
+            </el-upload>
+          </el-form-item>
+        </el-row>
+
+        <el-divider></el-divider>
+        <div style="font-weight: bold; margin-bottom: 20px;">属性值信息</div>
+        <template v-if="editForm.propvalues.length > 0">
+          <el-row :gutter="20" v-for="(item) in editForm.propvalues">
+            <el-col :span="10">
+              <el-form-item :label="item.propertyName" prop="name" size="mini">
+                <el-input v-model="item.propertyvalueValue"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </template>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="editCategory">确定</el-button>
+        <el-button type="primary" @click="editProduct">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -228,8 +317,8 @@
 
 <script>
 import { saveAs } from 'file-saver'
-import {IMG_BASEURL} from '@/utils/baseurl'
-import { GetProductListAPI, GetCategoryListAllAPI, GetPropertyByCategoryIdAPI, ProductImageUpLoadAPI, GetCategoryInfoAPI, DeleteCategoryInfoAPI, UpdateCategoryAPI, InsertProductAPI } from '@/request/api'
+import { IMG_BASEURL } from '@/utils/baseurl'
+import { GetProductListAPI, GetCategoryListAllAPI, GetPropertyByCategoryIdAPI, ProductImageUpLoadAPI, GetProductInfoAPI, DeleteProductInfoAPI, UpdateProductAPI, InsertProductAPI } from '@/request/api'
 export default {
   data() {
     return {
@@ -239,22 +328,31 @@ export default {
       dialogFormVisible: false,
       addForm: {
         productCategoryId: "",
-        productIsUp:'1',
-        productName:'',
-        productTitle:'',
-        productPrice:'',
-        productSalePrice:'',
-        productCount:'',
-        singlePic:[],
-        detailPic:[],
+        productIsUp: '1',
+        productName: '',
+        productTitle: '',
+        productPrice: '',
+        productSalePrice: '',
+        productCount: '',
+        singlePic: [],
+        detailPic: [],
         propvalues: [],
       },
       inputVisible: false,
       inputValue: '',
       editDialogVisible: false,
       editForm: {
-        categoryName: "",
-        props: [],
+        productId: '',
+        productCategoryId: '',
+        productIsUp: '1',
+        productName: '',
+        productTitle: '',
+        productPrice: '',
+        productSalePrice: '',
+        productCount: '',
+        singlePic: [],
+        detailPic: [],
+        propvalues: [],
       },
       queryInfo: {
         pageNum: 1,
@@ -270,8 +368,10 @@ export default {
       categoryList: [],
       value: '',
       disabled: false,
-      fileList:[],
-      fileList2:[]
+      fileList: [],
+      fileList2: [],
+      singlePic: [],
+      detailPic: [],
     }
   },
   created() {
@@ -282,18 +382,32 @@ export default {
     handleRemove1(file) {
       console.log(file);
       console.log(this.fileList)
-      this.addForm.singlePic.splice(IMG_BASEURL + this.addForm.singlePic.indexOf(file.url),1);
-      this.fileList.splice(this.fileList.indexOf(file),1)
+      this.addForm.singlePic.splice(IMG_BASEURL + this.addForm.singlePic.indexOf(file.url), 1);
+      this.fileList.splice(this.fileList.indexOf(file), 1)
     },
     handleRemove2(file) {
       console.log(file);
       console.log(this.fileList)
-      this.addForm.detailPic.splice(IMG_BASEURL + this.addForm.detailPic.indexOf(file.url),1);
-      this.fileList.splice(this.fileList.indexOf(file),1)
+      this.addForm.detailPic.splice(IMG_BASEURL + this.addForm.detailPic.indexOf(file.url), 1);
+      this.fileList.splice(this.fileList.indexOf(file), 1)
+    },
+    handleRemove3(file) {
+      console.log(file);
+      console.log(this.singlePic, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=0")
+      // this.editForm.detailPic.splice(IMG_BASEURL + this.editForm.singlePic.indexOf(file.url),1);
+      this.editForm.singlePic.splice(this.editForm.singlePic.indexOf(file), 1);
+      this.singlePic.splice(this.singlePic.indexOf(file.productimageSrc), 1)
+    },
+    handleRemove4(file) {
+      console.log(file);
+      console.log(this.detailPic, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+      // this.editForm.detailPic.splice(IMG_BASEURL + this.editForm.detailPic.indexOf(file.url),1);
+      this.editForm.detailPic.splice(this.editForm.detailPic.indexOf(file), 1);
+      this.detailPic.splice(this.detailPic.indexOf(file.productimageSrc), 1)
     },
     async handleChange1(file, fileList) {
       this.fileList = fileList
-      
+
       var res = await ProductImageUpLoadAPI({
         file: file.raw,
         imageType: 'single'
@@ -303,14 +417,14 @@ export default {
       if (res.code == 200) {
         this.$message.success("图片上传成功");
         file.url = IMG_BASEURL + res.data;
-        this.addForm.singlePic.push(res.data)
+        this.addForm.singlePic.push({ productimageType: 0, productimageSrc: res.data })
       } else {
         this.$message.error("图片上传失败");
       }
     },
     async handleChange2(file, fileList) {
       this.fileList = fileList
-      
+
       var res = await ProductImageUpLoadAPI({
         file: file.raw,
         imageType: 'detail'
@@ -320,21 +434,75 @@ export default {
       if (res.code == 200) {
         this.$message.success("图片上传成功");
         file.url = IMG_BASEURL + res.data;
-        this.addForm.detailPic.push(res.data)
+        this.addForm.detailPic.push({ productimageType: 1, productimageSrc: res.data })
       } else {
         this.$message.error("图片上传失败");
       }
     },
+
+
+
+
+    async handleChange3(file, fileList) {
+      console.log("``````````````````````````````````````````````````````````````````````````");
+      var res = await ProductImageUpLoadAPI({
+        file: file.raw,
+        imageType: 'single'
+      }, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      if (res.code == 200) {
+        this.$message.success("图片上传成功");
+        console.log("图片上传成功");
+        this.editForm.singlePic.push({ productimageType: 0, productimageSrc: res.data })
+
+        console.log(this.editForm.singlePic, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+      } else {
+        this.$message.error("图片上传失败");
+      }
+    },
+    async handleChange4(file, fileList) {
+      console.log("``````````````````````````````````````````````````````````````````````````0");
+
+      var res = await ProductImageUpLoadAPI({
+        file: file.raw,
+        imageType: 'detail'
+      }, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      if (res.code == 200) {
+        this.$message.success("图片上传成功");
+        this.editForm.detailPic.push({ productimageType: 1, productimageSrc: res.data })
+        console.log(this.editForm.detailPic, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+      } else {
+        this.$message.error("图片上传失败");
+      }
+    },
+
     async addProductChangeCategoryId(val) {
       const propertyListRes = await GetPropertyByCategoryIdAPI(val)
       const propertyList = propertyListRes.data
+      console.log(propertyList, "=========================================");
       this.addForm.propvalues = []
       if (propertyList.length > 0) {
 
         propertyList.forEach(item => {
-          this.addForm.propvalues.push({ propertyvaluePropertyId: item.propertyId, propertyvalueValue: '' })
+          this.addForm.propvalues.push({ propertyvaluePropertyId: item.propertyId, propertyvalueValue: '', propertyName: item.propertyName })
         });
-        this.propertyList = propertyList;
+        console.log(this.addForm.propvalues);
+      }
+
+    },
+    async updateProductChangeCategoryId(val) {
+      const propertyListRes = await GetPropertyByCategoryIdAPI(val)
+      const propertyList = propertyListRes.data
+      console.log(propertyList, ".............................");
+      this.editForm.propvalues = []
+      if (propertyList.length > 0) {
+
+        propertyList.forEach(item => {
+          this.editForm.propvalues.push({ propertyvaluePropertyId: item.propertyId, propertyvalueValue: '', propertyName: item.propertyName })
+        });
       }
 
     },
@@ -355,23 +523,35 @@ export default {
     handleSizeChange(val) {
       //当每页数据量改变时执行
       console.log(`每页 ${val} 条`);
-      this.pageSize = val;
+      this.queryInfo.pageSize = val;
       this.getTableData();
     },
     handleCurrentChange(val) {
       //当前页数改变时执行
       console.log(`当前页: ${val}`);
-      this.pageNum = val;
+      this.queryInfo.pageNum = val;
       this.getTableData();
     },
     async addProduct() {
       const res = await InsertProductAPI(this.addForm);
       console.log(res);
       if (res.code != 200) {
-        this.$message.error("添加分类失败");
+        this.$message.error("添加商品 失败");
       } else {
         this.$message.success(res.message);
         this.getTableData();
+      }
+      this.addForm = {
+        productCategoryId: "",
+        productIsUp: '1',
+        productName: '',
+        productTitle: '',
+        productPrice: '',
+        productSalePrice: '',
+        productCount: '',
+        singlePic: [],
+        detailPic: [],
+        propvalues: [],
       }
       this.dialogFormVisible = false;
     },
@@ -382,57 +562,12 @@ export default {
       this.$refs.addFormRefs.resetFields();
       this.addForm.props = []
     },
-
-
-    handleCloseTagAdd(tag) {
-      this.addForm.props.splice(this.addForm.props.indexOf(tag), 1);
-    },
-
-    handleCloseTagUpdate(tag) {
-      console.log("tag", tag);
-      this.editForm.props.splice(tag, 1);
-    },
-
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(_ => {
-        this.$refs.saveTagInputUpdate.$refs.input.focus();
-      });
-    },
-
-    handleInputConfirmAdd() {
-      let inputValue = this.inputValue;
-      if (inputValue) {
-        if (!this.addForm.props.includes(inputValue))
-          this.addForm.props.push(inputValue);
-        else
-          this.$message.error("该属性已存在")
-      }
-      this.inputVisible = false;
-      this.inputValue = '';
-    },
-
-    handleInputConfirmUpdate() {
-      let inputValue = this.inputValue;
-      // alert(inputValue)
-      if (inputValue) {
-        var res = this.editForm.props.filter(item => item.propertyName === inputValue)
-        console.log(res);
-        if (res.length > 0)
-          this.$message.error("该属性已存在")
-        else
-          this.editForm.props.push({ propertyName: inputValue, propertyCategoryId: this.editForm.categoryId });
-      }
-      this.inputVisible = false;
-      this.inputValue = '';
-    },
-
     editDialogClosed() {
       this.$refs.editFormRefs.resetFields();
     },
     async showEditDialog(id) {
       console.log(id);
-      const res = await GetCategoryInfoAPI(id);
+      const res = await GetProductInfoAPI(id);
       if (res.code != 200) {
         this.$message.error("查询分类信息失败");
       } else {
@@ -440,19 +575,34 @@ export default {
         this.editForm = res.data;
       }
       console.log(this.editForm);
+      this.editForm.productIsUp = this.editForm.productIsUp + ""
+      console.log(typeof this.editForm.productIsUp);
     },
-    async editCategory() {
-      const res = await UpdateCategoryAPI(this.editForm);
+    async editProduct() {
+      const res = await UpdateProductAPI(this.editForm);
       if (res.code != 200) {
-        this.$message.error("修改分类信息失败");
+        this.$message.error("修改商品信息失败");
       } else {
-        this.$message.success("修改分类信息成功");
+        this.$message.success(res.message);
+        this.editForm = {
+          productId: '',
+          productCategoryId: '',
+          productIsUp: '1',
+          productName: '',
+          productTitle: '',
+          productPrice: '',
+          productSalePrice: '',
+          productCount: '',
+          singlePic: [],
+          detailPic: [],
+          propvalues: [],
+        }
         this.getTableData();
       }
       this.editDialogVisible = false;
     },
     async deleteDialog(id) {
-      const result = await this.$confirm('此操作将永久删除该分类信息, 是否继续?', '提示', {
+      const result = await this.$confirm('此操作将永久删除该商品信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -462,11 +612,14 @@ export default {
         this.$message.info("取消删除");
       }
       if (result == "confirm") {
-        const res = await DeleteCategoryInfoAPI(id);
+        const res = await DeleteProductInfoAPI(id);
         if (res.code != 200) {
-          this.$message.error("删除分类信息失败");
+          this.$message.error("删除商品信息失败");
         } else {
-          this.$message.success("删除分类信息成功");
+          this.$message.success(res.message);
+          if (--this.total % this.queryInfo.pageSize == 0) {
+            this.queryInfo.pageNum--;
+          }
           this.getTableData();
         }
       }

@@ -63,6 +63,13 @@ export default {
                         icon:"el-icon-goods"
                     }
                 },
+                {
+                    path:"/user",
+                    meta:{
+                        title:"用户管理",
+                        icon:"el-icon-user"
+                    }
+                },
             ]
         }
     },

@@ -27,3 +27,10 @@ export const GetPropertyByCategoryIdAPI = (params) => instance.get(`/property/li
 export const ProductImageUpLoadAPI = (params,config) => instance.post("/product/upload",params,config)
 //商品添加
 export const InsertProductAPI = (params) => instance.post("/product/insert",params)
+export const GetProductInfoAPI = (params) => instance.get(`/product/info/${params}`);
+export const UpdateProductAPI = (params) => instance.put("/product/update",params)
+export const DeleteProductInfoAPI = (params) => instance.delete(`/product/delete/${params}`);
+
+export const GetUserListAPI = (params) => instance.get("/user/list",{params});
+
+

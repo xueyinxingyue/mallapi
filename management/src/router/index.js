@@ -32,6 +32,11 @@ const routes = [
         path: '/product',
         component: () => import(/* webpackChunkName: "product" */ '../views/product/Product.vue'),
         meta:{titles:['所有商品']}
+      },
+      {
+        path: '/user',
+        component: () => import(/* webpackChunkName: "product" */ '../views/user/User.vue'),
+        meta:{titles:['用户管理']}
       }
     ]
   },

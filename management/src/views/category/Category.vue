@@ -137,6 +137,7 @@ export default {
       console.log(customerListRes);
       this.total = customerListRes.data.total;
       this.tableData = customerListRes.data.records;
+
     },
     handleSelectionChange() {
 
@@ -144,13 +145,13 @@ export default {
     handleSizeChange(val) {
       //当每页数据量改变时执行
       console.log(`每页 ${val} 条`);
-      this.pageSize = val;
+      this.queryInfo.pageSize = val;
       this.getTableData();
     },
     handleCurrentChange(val) {
       //当前页数改变时执行
       console.log(`当前页: ${val}`);
-      this.pageNum = val;
+      this.queryInfo.pageNum = val;
       this.getTableData();
     },
     async addCategory() {
@@ -162,6 +163,10 @@ export default {
         this.$message.success(res.message);
         this.getTableData();
       }
+      this.addForm = {
+        categoryName: "",
+        props: [],
+      };
       this.dialogFormVisible = false;
     },
     handleClose() {
@@ -256,6 +261,9 @@ export default {
                 this.$message.error("删除分类信息失败");
             }else{
                 this.$message.success("删除分类信息成功");
+                if(--this.total % this.queryInfo.pageSize == 0){
+                  this.queryInfo.pageNum--;
+                }
                 this.getTableData();
             }
         }

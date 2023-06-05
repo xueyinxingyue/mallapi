@@ -1,13 +1,16 @@
 package com.xueyin.mallapi.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xueyin.mallapi.entity.Product;
 import com.xueyin.mallapi.entity.Productimage;
+import com.xueyin.mallapi.entity.Property;
 import com.xueyin.mallapi.entity.Propertyvalue;
 import com.xueyin.mallapi.mapper.ProductMapper;
 import com.xueyin.mallapi.mapper.ProductimageMapper;
+import com.xueyin.mallapi.mapper.PropertyMapper;
 import com.xueyin.mallapi.mapper.PropertyvalueMapper;
 import com.xueyin.mallapi.qo.ProductQo;
 import com.xueyin.mallapi.service.IProductService;
@@ -21,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +47,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private ProductimageMapper productimageMapper;
     @Autowired
     private PropertyvalueMapper propertyvalueMapper;
+    @Autowired
+    private PropertyMapper propertyMapper;
 
     @Override
     public IPage<Product> page(ProductQo qo){
@@ -92,7 +99,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public boolean save(Product entity){
         //保存商品信息
-        entity.setProductCreateDate(LocalDateTime.now());
+        entity.setProductCreateDate(new Date());
         baseMapper.insert(entity);
         //保存商品的图片信息
 
@@ -122,6 +129,96 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 propertyvalueMapper.insert(propvalue);
             }
         }
+        return false;
+    }
+
+    @Override
+    public Product getById(Serializable id) {
+        //根据id查询商品信息
+        Product product = baseMapper.selectById(id);
+        //查询商品的概述图片信息
+        LambdaQueryWrapper<Productimage> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.eq(Productimage::getProductimageProductId,id)
+                .eq(Productimage::getProductimageType,0);
+        List<Productimage> singlePic = productimageMapper.selectList(wrapper1);
+
+        //查询商品的详细图片信息
+        LambdaQueryWrapper<Productimage> wrapper2 = new LambdaQueryWrapper<>();
+        wrapper1.eq(Productimage::getProductimageProductId,id)
+                .eq(Productimage::getProductimageType,1);
+        List<Productimage> detailPic = productimageMapper.selectList(wrapper2);
+
+        //查询商品的属性值信息
+        LambdaQueryWrapper<Propertyvalue> wrapper3 = new LambdaQueryWrapper<>();
+        wrapper3.eq(Propertyvalue::getPropertyvalueProductId,id);
+        List<Propertyvalue> propertyvalues = propertyvalueMapper.selectList(wrapper3);
+        //遍历出每一个属性值，分别查询属性值对应属性的名称
+        if (propertyvalues != null && propertyvalues.size() > 0){
+            for (Propertyvalue propertyvalue : propertyvalues){
+                Property property = propertyMapper.selectById(propertyvalue.getPropertyvaluePropertyId());
+                propertyvalue.setPropertyName(property.getPropertyName());
+            }
+        }
+
+        //将概述图片、详细图片、属性值信息存储到product对象
+        product.setSinglePic(singlePic);
+        product.setDetailPic(detailPic);
+        product.setPropvalues(propertyvalues);
+        return product;
+    }
+
+    @Override
+    public boolean updateById(Product entity) {
+        //修改商品信息
+        baseMapper.updateById(entity);
+        //想删除商品原有的概述和详细图片
+        LambdaUpdateWrapper<Productimage> wrapper1 = new LambdaUpdateWrapper<>();
+        wrapper1.eq(Productimage::getProductimageProductId,entity.getProductId());
+        productimageMapper.delete(wrapper1);
+        //修改概述图片
+        List<Productimage> singlePic = entity.getSinglePic();
+        if (singlePic != null && singlePic.size() > 0){
+            for (Productimage productimage : singlePic){
+                productimage.setProductimageProductId(entity.getProductId());
+                productimageMapper.insert(productimage);
+            }
+        }
+        //修改详情图片信息
+        List<Productimage> detailPic = entity.getSinglePic();
+        if (detailPic != null && detailPic.size() > 0){
+            for (Productimage productimage : detailPic){
+                productimage.setProductimageProductId(entity.getProductId());
+                productimageMapper.insert(productimage);
+            }
+        }
+        //修改属性值信息
+        //删除商品原有的属性值信息
+        LambdaUpdateWrapper<Propertyvalue> wrapper2 = new LambdaUpdateWrapper<>();
+        wrapper2.eq(Propertyvalue::getPropertyvalueProductId,entity.getProductId());
+        propertyvalueMapper.delete(wrapper2);
+        List<Propertyvalue> propvalues = entity.getPropvalues();
+        if (propvalues != null && propvalues.size() > 0){
+            for (Propertyvalue propvalue : propvalues){
+                propvalue.setPropertyvaluePropertyId(entity.getProductId());
+                propertyvalueMapper.insert(propvalue);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeById(Serializable id) {
+        //删除商品信息
+        baseMapper.deleteById(id);
+        //删除商品的图片信息
+        LambdaUpdateWrapper<Productimage> wrapper1 = new LambdaUpdateWrapper<>();
+        wrapper1.eq(Productimage::getProductimageProductId,id);
+        productimageMapper.delete(wrapper1);
+        //删除商品属性值信息
+        LambdaUpdateWrapper<Propertyvalue> wrapper2 = new LambdaUpdateWrapper<>();
+        wrapper2.eq(Propertyvalue::getPropertyvalueProductId,id);
+        propertyvalueMapper.delete(wrapper2);
+
         return false;
     }
 }

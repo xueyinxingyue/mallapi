@@ -45,5 +45,26 @@ public class ProductController {
         productService.save(product);
         return Result.success("商品添加成功");
     }
+
+    //根据id获取商品信息
+    @GetMapping("info/{id}")
+    public Result getInfo(@PathVariable Integer id){
+        Product product = productService.getById(id);
+        return Result.success("商品信息获取成功",product);
+    }
+
+    //修改商品信息
+    @PutMapping("update")
+    public Result update(@RequestBody Product product){
+        productService.updateById(product);
+        return Result.success("商品信息修改成功");
+    }
+
+    //删除商品信息
+    @DeleteMapping("delete/{id}")
+    public Result delete(@PathVariable Integer id){
+        productService.removeById(id);
+        return Result.success("商品信息删除成功");
+    }
 }
 
