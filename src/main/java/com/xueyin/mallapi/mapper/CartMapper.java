@@ -1,18 +1,18 @@
 package com.xueyin.mallapi.mapper;
 
-import com.xueyin.mallapi.entity.Product;
+import com.xueyin.mallapi.entity.Cart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 /**
  * <p>
- * 产品表 Mapper 接口
+ *  Mapper 接口
  * </p>
  *
  * @author xueyin
- * @since 2023-06-03
+ * @since 2023-06-07
  */
 @Repository
-public interface ProductMapper extends BaseMapper<Product> {
+public interface CartMapper extends BaseMapper<Cart> {
 
 }

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -82,4 +83,8 @@ public class User implements Serializable {
     //用户家乡地址对象
     @TableField(exist = false)
     private Address userHomeAddressObj;
+
+    //购物车信息
+    @TableField(exist = false)
+    private List<Cart> carts;
 }
