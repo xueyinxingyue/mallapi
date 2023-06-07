@@ -1,10 +1,12 @@
 package com.xueyin.mallapi.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -81,5 +83,15 @@ public class Productorder implements Serializable {
      */
     private Integer productorderUserId;
 
+    //所属的用户对象
+    @TableField(exist = false)
+    private User user;
 
+    //收货地址详情的地址对象
+    @TableField(exist = false)
+    private Address productorderAddressObj;
+
+    //拥有的订单项信息
+    @TableField(exist = false)
+    private List<Productorderitem> productorderitems;
 }
