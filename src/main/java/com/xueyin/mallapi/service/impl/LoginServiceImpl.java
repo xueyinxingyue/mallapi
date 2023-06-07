@@ -93,7 +93,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void logout(HttpServletRequest request) {
-        Enumeration<String> token = request.getHeaders("Authorization");
+        String token = request.getHeader("Authorization");
         //将Redis中存储的token删除
         redisUtils.del(Constants.LOGIN_ADMIN_INFO_TOKEN + token);
     }
