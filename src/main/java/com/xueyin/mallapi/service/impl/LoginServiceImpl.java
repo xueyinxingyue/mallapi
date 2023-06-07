@@ -63,8 +63,7 @@ public class LoginServiceImpl implements LoginService {
             throw new BusinessException("账号或密码输入错误");
         }
 
-        //登录成功
-        //生成token
+        //登录成功并生成token
         String token = UUID.randomUUID().toString().replaceAll("-", "");
 
         //将登录的用户信息存储到Redis中，token作为key，登录的用户对象作为value
