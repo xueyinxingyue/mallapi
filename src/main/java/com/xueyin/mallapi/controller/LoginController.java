@@ -40,4 +40,11 @@ public class LoginController {
         Admin admin = loginService.getUserInfo(request);
         return Result.success("获取用户信息成功",admin);
     }
+
+    //退出登录
+    @GetMapping("logout")
+    public Result logout(HttpServletRequest request){
+        loginService.logout(request);
+        return Result.success("退出登录成功");
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -89,5 +90,12 @@ public class LoginServiceImpl implements LoginService {
         loginAdmin.setAdminPassword(null);
 
         return loginAdmin;
+    }
+
+    @Override
+    public void logout(HttpServletRequest request) {
+        Enumeration<String> token = request.getHeaders("Authorization");
+        //将Redis中存储的token删除
+        redisUtils.del(Constants.LOGIN_ADMIN_INFO_TOKEN + token);
     }
 }

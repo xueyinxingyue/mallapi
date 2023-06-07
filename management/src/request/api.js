@@ -43,4 +43,5 @@ export const GetOrderInfoAPI = (params) => instance.get(`/productorder/info/${pa
 
 export const OrderSendAPI = (params) => instance.get(`/productorder/send/${params}`);
 
-
+//退出登录请求
+export const LogoutAPI = () => instance.get("/logout");

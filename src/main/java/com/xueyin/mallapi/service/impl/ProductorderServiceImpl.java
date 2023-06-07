@@ -1,5 +1,6 @@
 package com.xueyin.mallapi.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -48,6 +49,19 @@ public class ProductorderServiceImpl extends ServiceImpl<ProductorderMapper, Pro
 
         page = baseMapper.selectPage(page,wrapper);
         return page;
+    }
+
+    @Override
+    public void updateById(Integer id) {
+        Productorder productorder = new Productorder();
+        //设置订单id，要修改的订单id
+        productorder.setProductorderId(id);
+        //将状态设置为待确认状态   2
+        productorder.setProductorderStatus(2);
+        //设置发货时间
+        productorder.setProductorderDeliveryDate(DateTime.now());
+
+        baseMapper.updateById(productorder);
     }
 
     @Override

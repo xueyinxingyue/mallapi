@@ -15,4 +15,6 @@ import com.xueyin.mallapi.qo.ProductOrderQo;
  */
 public interface IProductorderService extends IService<Productorder> {
     IPage<Productorder> page(ProductOrderQo qo);
+
+    void updateById(Integer id);
 }

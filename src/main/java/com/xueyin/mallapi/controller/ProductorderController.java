@@ -1,6 +1,7 @@
 package com.xueyin.mallapi.controller;
 
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xueyin.mallapi.common.Result;
 import com.xueyin.mallapi.entity.Productorder;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -41,5 +44,11 @@ public class ProductorderController {
         return Result.success("订单详情获取成功",productorder);
     }
 
+    //订单发货
+    @GetMapping("send/{id}")
+    public Result send(@PathVariable Integer id){
+        productorderService.updateById(id);
+        return Result.success("订单发货成功");
+    }
 }
 

@@ -34,6 +34,7 @@ import {mapMutations,mapState} from 'vuex'
 import Crumb from '@/components/Crumb.vue'
 import Tags from '@/components/Tags.vue'
 import {IMG_BASEURL} from '@/utils/baseurl'
+import {LogoutAPI} from '@/request/api'
 export default {
     components:{
         Crumb,
@@ -59,11 +60,12 @@ export default {
             this.isShow=!this.isShow
             this.changeIsCollapse()
         },
-        hdCommand(command){
+        async hdCommand(command){
             console.log("!!!!!!",command);
             if(command === 'logout'){
-                localStorage.removeItem('m-authorization-token');
-                localStorage.removeItem('m-userInfo')
+                //向后端发送退出登录请求
+                const logoutRes = await LogoutAPI();
+                console.log(logoutRes);
                 this.$router.push("/login")
             }else if(command === 'profile'){
                 this.$router.push("/profile")
