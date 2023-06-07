@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Button,Input,Form,FormItem,Message,MenuItemGroup,MenuItem,Menu,Submenu,Breadcrumb,BreadcrumbItem,Dropdown,DropdownItem,DropdownMenu,Tag,Table,TableColumn,Pagination,Tooltip,Dialog,MessageBox,Col,Card, Row,Switch, Select,Option, Checkbox, Divider, Radio, Upload } from 'element-ui'
+import { Button,Input,Form,FormItem,Message,MenuItemGroup,MenuItem,Menu,Submenu,Breadcrumb,BreadcrumbItem,Dropdown,DropdownItem,DropdownMenu,Tag,Table,TableColumn,Pagination,Tooltip,Dialog,MessageBox,Col,Card, Row,Switch, Select,Option, Checkbox, Divider, Radio, Upload,CheckboxGroup, Link, Steps, Step } from 'element-ui'
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
@@ -33,4 +33,7 @@ Vue.use(Checkbox)
 Vue.use(Divider)
 Vue.use(Radio)
 Vue.use(Upload)
-
+Vue.use(CheckboxGroup)
+Vue.use(Link)
+Vue.use(Steps)
+Vue.use(Step)

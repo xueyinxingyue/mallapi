@@ -1,4 +1,5 @@
 import instance from "./request"
+import qs from "qs"
 
 //获取验证码请求
 export const GetCaptchaAPI = () => instance.get("/captcha");
@@ -32,5 +33,14 @@ export const UpdateProductAPI = (params) => instance.put("/product/update",param
 export const DeleteProductInfoAPI = (params) => instance.delete(`/product/delete/${params}`);
 
 export const GetUserListAPI = (params) => instance.get("/user/list",{params});
+
+
+export const GetOrderListAPI = (params) => instance.get("/productorder/list",{params,paramsSerializer: params => {
+    return qs.stringify(params, { indices: false })
+  }});
+
+export const GetOrderInfoAPI = (params) => instance.get(`/productorder/info/${params}`);
+
+export const OrderSendAPI = (params) => instance.get(`/productorder/send/${params}`);
 
 

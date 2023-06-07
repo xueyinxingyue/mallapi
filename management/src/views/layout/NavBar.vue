@@ -70,6 +70,13 @@ export default {
                         icon:"el-icon-user"
                     }
                 },
+                {
+                    path:"/order",
+                    meta:{
+                        title:"所有订单",
+                        icon:"el-icon-s-order"
+                    }
+                },
             ]
         }
     },

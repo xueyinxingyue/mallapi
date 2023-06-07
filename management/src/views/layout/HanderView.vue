@@ -17,7 +17,6 @@
                     </div>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item command="profile">个人中心</el-dropdown-item>
-                        <!-- <el-dropdown-item disabled>双皮奶</el-dropdown-item> -->
                         <el-dropdown-item divided command="logout">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>

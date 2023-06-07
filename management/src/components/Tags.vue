@@ -15,6 +15,7 @@
 </template>
 
 <script>
+
 export default {
     data () {
         return {
@@ -52,6 +53,7 @@ export default {
             immediate: true, //立即监听
             handler(val,oldVal){
                 const bool = this.tags.find(item => {
+                    console.log(val.path,"~~~~~~",item.path);
                     return val.path == item.path
                 })
                 if(!bool){
