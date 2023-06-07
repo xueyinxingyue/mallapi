@@ -65,7 +65,9 @@ export default {
             if(command === 'logout'){
                 //向后端发送退出登录请求
                 const logoutRes = await LogoutAPI();
-                console.log(logoutRes);
+                console.log(logoutRes)
+                localStorage.removeItem('m-authorization-token');
+                localStorage.removeItem('m-userInfo')
                 this.$router.push("/login")
             }else if(command === 'profile'){
                 this.$router.push("/profile")
